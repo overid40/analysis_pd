@@ -4,11 +4,11 @@ from urllib.parse import urlencode
 from .web_request import json_request
 import math
 
-SERVICE_KEY = 'aOfeFUvQLW9r7sj4YJ9ImX59DF7eObseBnnTb3LLm%2FZCiqKoGqTGr75%2Frac1mstKdLdALUq7Siel4BL1rk%2FO1Q%3D%3D'
+# SERVICE_KEY = 'aOfeFUvQLW9r7sj4YJ9ImX59DF7eObseBnnTb3LLm%2FZCiqKoGqTGr75%2Frac1mstKdLdALUq7Siel4BL1rk%2FO1Q%3D%3D'
 
 
-def pd_gen_url(endpoint, **param):
-    url = '%s?%s&serviceKey=%s' % (endpoint, urlencode(param), SERVICE_KEY)
+def pd_gen_url(endpoint, service_key, **param):
+    url = '%s?%s&serviceKey=%s' % (endpoint, urlencode(param), service_key)
     return url
     print(url)
 
@@ -20,9 +20,9 @@ def fb_name_to_id(pagename):
 '''
 
 
-def pd_fetch_foreign_visitor(country_code, year, month):
+def pd_fetch_foreign_visitor(country_code, year, month, service_key=''):
     endpoint = 'http://openapi.tour.go.kr/openapi/service/EdrcntTourismStatsService/getEdrcntTourismStatsList'
-    url = pd_gen_url(endpoint, YM='{0:04d}{1:02d}'.format(year, month), NAT_CD=country_code, ED_CD='E', _type='json')
+    url = pd_gen_url(endpoint, service_key, YM='{0:04d}{1:02d}'.format(year, month), NAT_CD=country_code, ED_CD='E', _type='json')
     print(url)
 
     json_result = json_request(url=url)
@@ -40,12 +40,12 @@ def pd_fetch_foreign_visitor(country_code, year, month):
     return json_items.get('item') if isinstance(json_items, dict) else None
 
 
-def pd_fetch_tourspot_visitor(district1='', district2='', tourspot='', year=0, month=0):
+def pd_fetch_tourspot_visitor(district1='', district2='', tourspot='', year=0, month=0, service_key=''):
     endpoint = 'http://openapi.tour.go.kr/openapi/service/TourismResourceStatsService/getPchrgTrrsrtVisitorList'
     pageno=1
     hasnext = True
     while hasnext:
-        url = pd_gen_url(endpoint, YM='{0:04d}{1:02d}'.format(year, month),
+        url = pd_gen_url(endpoint, service_key, YM='{0:04d}{1:02d}'.format(year, month),
         SIDO=district1,
         GUNGU=district2,
         RES_NM=tourspot,

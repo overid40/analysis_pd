@@ -1,8 +1,8 @@
-import os
+# import os
 import json
 from .api import api
 
-RESULT_DIRECTORY = '__results__/crawling'
+# RESULT_DIRECTORY = '__results__/crawling'
 
 
 def preprocess_foreign_visitor(data):
@@ -68,52 +68,56 @@ def preprocess_tourspot_visitor(data):
     del data['ym']
 
 
-def crawling_foreign_visitor(country, start_year, end_year):
+def crawling_foreign_visitor(country, start_year, end_year, fetch=True, result_directory='', service_key=''):
     results = []
-    for year in range(start_year, end_year+1):
-        for month in range(1, 13):
-        #for month in range(1, 4):
-            # print("fetch..." + country[0] + ":" + str(year) + "-" + str(month))
-            data = api.pd_fetch_foreign_visitor(country[1], year, month)
-            if data is None:
-                continue
 
-            preprocess_foreign_visitor(data)
-            results.append(data)
+    if fetch:
+        for year in range(start_year, end_year+1):
+            for month in range(1, 13):
+            #for month in range(1, 4):
+                # print("fetch..." + country[0] + ":" + str(year) + "-" + str(month))
+                data = api.pd_fetch_foreign_visitor(country[1], year, month, service_key)
+                if data is None:
+                    continue
 
-    # save data to file
-    # print(results)
-    filename = '%s/%s(%s)_foreignvisitor_%s_%s.json' % (RESULT_DIRECTORY, country[0], country[1], start_year, end_year)
-    with open(filename, 'w', encoding='utf-8') as outfile:
-        json_string = json.dumps(results, indent=4, sort_keys=True, ensure_ascii=False)
-        outfile.write(json_string)
+                preprocess_foreign_visitor(data)
+                results.append(data)
 
-
-if not os.path.exists(RESULT_DIRECTORY):
-    os.makedirs(RESULT_DIRECTORY)
+        # save data to file
+        # print(results)
+        filename = '%s/%s(%s)_foreignvisitor_%s_%s.json' % (result_directory, country[0], country[1], start_year, end_year)
+        with open(filename, 'w', encoding='utf-8') as outfile:
+            json_string = json.dumps(results, indent=4, sort_keys=True, ensure_ascii=False)
+            outfile.write(json_string)
 
 
-def crawling_tourspot_visitor(district, start_year, end_year):
+#if not os.path.exists(RESULT_DIRECTORY):
+#    os.makedirs(RESULT_DIRECTORY)
+
+
+def crawling_tourspot_visitor(district, start_year, end_year, fetch=True, result_directory='', service_key=''):
     results = []
-    for year in range(start_year, end_year + 1):
-        for month in range(1, 13):
-        # for month in range(1, 4):
-            # print("fetch..." + country[0] + ":" + str(year) + "-" + str(month))
-            datass = api.pd_fetch_tourspot_visitor(district, year=year, month=month)
-            for datas in datass:
-                for data in datas:
-                    preprocess_tourspot_visitor(data)
-                results.append(datas)
-    print(results)
 
-    # save data to file
-    # print(results)
-    filename = '%s/%s_touristspot_%s_%s.json' % (RESULT_DIRECTORY, district, start_year, end_year)
-    with open(filename, 'w', encoding='utf-8') as outfile:
-        json_string = json.dumps(results, indent=4, sort_keys=True, ensure_ascii=False)
-        outfile.write(json_string)
+    if fetch:
+        for year in range(start_year, end_year + 1):
+            for month in range(1, 13):
+            # for month in range(1, 4):
+                # print("fetch..." + country[0] + ":" + str(year) + "-" + str(month))
+                datass = api.pd_fetch_tourspot_visitor(district, year=year, month=month, service_key=service_key)
+                for datas in datass:
+                    for data in datas:
+                        preprocess_tourspot_visitor(data)
+                    results.append(datas)
+        print(results)
+
+        # save data to file
+        # print(results)
+        filename = '%s/%s_touristspot_%s_%s.json' % (result_directory, district, start_year, end_year)
+        with open(filename, 'w', encoding='utf-8') as outfile:
+            json_string = json.dumps(results, indent=4, sort_keys=True, ensure_ascii=False)
+            outfile.write(json_string)
 
 
-if not os.path.exists(RESULT_DIRECTORY):
-    os.makedirs(RESULT_DIRECTORY)
+#if not os.path.exists(RESULT_DIRECTORY):
+#   os.makedirs(RESULT_DIRECTORY)
 
