@@ -6,7 +6,7 @@ CONFIG = {
     'common': {
         'start_year': 2017,
         'end_year': 2017,
-        'fetch': True,
+        'fetch': False,
         'result_directory': '__results__/crawling',
         'service_key' : 'aOfeFUvQLW9r7sj4YJ9ImX59DF7eObseBnnTb3LLm%2FZCiqKoGqTGr75%2Frac1mstKdLdALUq7Siel4BL1rk%2FO1Q%3D%3D'
     }
